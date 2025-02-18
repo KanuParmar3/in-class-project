@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>List with Pagination</title>
+		<!-- Bootstrap CSS -->
+		<link
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+			rel="stylesheet"
+		/>
+
+		<!-- List.js library -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+
+		<style>
+			/* Additional styling for the table */
+			.table-container {
+				margin: 20px;
+			}
+			.pagination {
+				justify-content: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container table-container">
+			<h2>Item List</h2>
+
+			<!-- Search and Add button -->
+			<div class="form-inline mb-3">
+				<input
+					class="form-control mr-2"
+					id="search"
+					type="search"
+					placeholder="Search"
+				/>
+				<button class="btn btn-primary" id="addItemButton">Add Item</button>
+			</div>
+
+			<!-- List.js table -->
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Name</th>
+						<th>Description</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody class="list">
+					<!-- Dynamic content will be inserted here -->
+				</tbody>
+			</table>
+
+			<!-- Pagination -->
+			<div class="pagination">
+				<ul class="pagination-list"></ul>
+			</div>
+		</div>
+
+		<script>
+			// Sample data for list.js
+			const data = [
+				{ id: 1, name: "Item 1", description: "Description of Item 1" },
+				{ id: 2, name: "Item 2", description: "Description of Item 2" },
+				{ id: 3, name: "Item 3", description: "Description of Item 3" },
+				{ id: 4, name: "Item 4", description: "Description of Item 4" },
+				{ id: 5, name: "Item 5", description: "Description of Item 5" },
+				{ id: 6, name: "Item 6", description: "Description of Item 6" },
+				{ id: 7, name: "Item 7", description: "Description of Item 7" },
+				{ id: 8, name: "Item 8", description: "Description of Item 8" },
+				{ id: 9, name: "Item 9", description: "Description of Item 9" },
+				{ id: 10, name: "Item 10", description: "Description of Item 10" },
+			];
+
+			// Initialize List.js
+			const options = {
+				valueNames: ["name", "description"],
+				page: 3, // Number of items per page
+				pagination: true,
+			};
+
+			const itemList = new List("listContainer", options);
+
+			// Dynamically generate rows based on sample data
+			const tableBody = document.querySelector(".list");
+			data.forEach((item) => {
+				const row = document.createElement("tr");
+				row.innerHTML = `
+                <td>${item.id}</td>
+                <td class="name">${item.name}</td>
+                <td class="description">${item.description}</td>
+                <td><button class="btn btn-danger delete-button">Delete</button></td>
+            `;
+				tableBody.appendChild(row);
+			});
+
+			// Add item button functionality
+			document.getElementById("addItemButton").addEventListener("click", () => {
+				const newItem = {
+					id: data.length + 1,
+					name: `Item ${data.length + 1}`,
+					description: `Description of Item ${data.length + 1}`,
+				};
+				data.push(newItem);
+				const row = document.createElement("tr");
+				row.innerHTML = `
+                <td>${newItem.id}</td>
+                <td class="name">${newItem.name}</td>
+                <td class="description">${newItem.description}</td>
+                <td><button class="btn btn-danger delete-button">Delete</button></td>
+            `;
+				tableBody.appendChild(row);
+				itemList.add(newItem); // Add to List.js
+			});
+
+			// Delete item functionality
+			tableBody.addEventListener("click", (e) => {
+				if (e.target && e.target.classList.contains("delete-button")) {
+					const row = e.target.closest("tr");
+					const rowId = row.querySelector("td").textContent;
+					itemList.remove(rowId - 1); // Remove from List.js
+					row.remove(); // Remove from table
+				}
+			});
+		</script>
+	</body>
+</html>

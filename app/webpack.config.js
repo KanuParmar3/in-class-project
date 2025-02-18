@@ -5,10 +5,11 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
 	entry: {
 		main: "./js/index.js",
+		list: "./js/list.js",
 	},
 
 	output: {
-		path: path.resolve(__dirname, "dist"),
+		path: path.resolve(__dirname, "../dist"),
 		filename: "[name].js",
 		publicPath: "/", // This ensures assets are loaded correctly
 	},
@@ -36,10 +37,15 @@ module.exports = {
 			chunks: ["main"],
 			filename: "index.html",
 		}),
+		new HtmlWebpackPlugin({
+			template: "./list.html",
+			chunks: ["main"],
+			filename: "list.html",
+		}),
 	],
 
 	devServer: {
-		static: "./dist",
+		static: "../dist",
 		port: 9000,
 	},
 };
